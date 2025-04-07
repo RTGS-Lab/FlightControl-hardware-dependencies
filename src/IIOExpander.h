@@ -1,12 +1,12 @@
 /******************************************************************************
-IPCAL9535A.h
-Interface for PACL9535A 16 bit IO expander
+IIOExpander.h
+Interface for 16 bit IO expander
 Based on original PCAL9535A implementation
 © 2025 Regents of the University of Minnesota. All rights reserved.
 ******************************************************************************/
 
-#ifndef IPCAL9535A_h
-#define IPCAL9535A_h
+#ifndef IIOExpander_h
+#define IIOExpander_h
 
 #include <stdint.h>
 #include "../../FlightControl-platform-dependencies/src/IWire.h" // Use platform-independent IWire
@@ -28,7 +28,7 @@ enum class DriveStrength : uint8_t {
 /**
  * @brief Abstract interface for PCAL9535A I/O expander functionality
  */
-class IPCAL9535A {
+class IIOExpander {
 public:
     // Safe mode constants
     static constexpr int SAFEOFF = -1; // No additional error logging
@@ -45,7 +45,7 @@ public:
     };
 
     // Virtual destructor
-    virtual ~IPCAL9535A() = default;
+    virtual ~IIOExpander() = default;
     
     // Core functionality
     virtual int begin(void) = 0;
@@ -99,4 +99,4 @@ public:
     virtual uint16_t readWord(int Pos, int &Error) = 0;
 };
 
-#endif // IPCAL9535A_h
+#endif // IIOExpander_h
