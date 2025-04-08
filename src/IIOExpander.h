@@ -15,16 +15,6 @@ Based on original PCAL9535A implementation
 #define A 0
 #define B 1
 
-// Forward declarations
-typedef struct intVals intVals;
-
-// DriveStrength enum required by pinSetDriveStrength method
-enum class DriveStrength : uint8_t {
-    DEFAULT = 0,
-    HIGH = 1,
-    STANDARD = 2
-};
-
 /**
  * @brief Abstract interface for PCAL9535A I/O expander functionality
  */
@@ -85,7 +75,7 @@ public:
     // Configuration methods
     virtual int setIntPinConfig(int Pin, bool Latch) = 0;
     virtual int setBusOutput(uint8_t mode, bool Port) = 0;
-    virtual uint8_t getBusOutput() = 0;
+    //virtual uint8_t getBusOutput() = 0;
     
     // Bus read method
     virtual uint16_t readBus() = 0;
