@@ -75,7 +75,7 @@ public:
     // Configuration methods
     virtual int setIntPinConfig(int Pin, bool Latch) = 0;
     virtual int setBusOutput(uint8_t mode, bool Port) = 0;
-    //virtual uint8_t getBusOutput() = 0;
+    virtual uint8_t getBusOutput() = 0;
     
     // Bus read method
     virtual uint16_t readBus() = 0;
