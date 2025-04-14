@@ -26,6 +26,7 @@ public:
     virtual String sendCommand(String command) = 0;
     virtual String command(String commandStr, int address) = 0;
     virtual int startMeasurment(int Address) = 0;
+    virtual int startMeasurmentIndex(int index, int Address) = 0;
     virtual String continuousMeasurmentCRC(int Measure, int Address) = 0;
     virtual bool testCRC(String message) = 0;
     
