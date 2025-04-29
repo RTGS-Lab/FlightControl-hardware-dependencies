@@ -13,6 +13,46 @@
 
 #include <stdint.h>
 
+typedef enum
+{
+  SUCCESS,
+  FAIL,
+  CRC_FAIL,
+  TIMEOUT,
+  COMMAND_NACK, // Indicates that the command was unrecognised, invalid or that the module is too busy to respond
+  OUT_OF_RANGE,
+  INVALID_ARG,
+  INVALID_OPERATION,
+  MEM_ERR,
+  HW_ERR,
+  DATA_SENT,     // This indicates that a 'set' was successful
+  DATA_RECEIVED, // This indicates that a 'get' (poll) was successful
+  I2C_COMM_FAILURE,
+  DATA_OVERWRITTEN // This is an error - the data was valid but has been or _is being_ overwritten by another packet
+} Isfe_ublox_status_e;
+
+typedef enum
+{
+  VALIDITY_NOT_VALID,
+  VALIDITY_VALID,
+  VALIDITY_NOT_DEFINED,
+  NOTACKNOWLEDGED // This indicates that we received a NACK
+} Isfe_ublox_packet_validity_e;
+
+struct IUbxPacket
+{
+  uint8_t cls;
+  uint8_t id;
+  uint16_t len;          // Length of the payload. Does not include cls, id, or checksum bytes
+  uint16_t counter;      // Keeps track of number of overall bytes received. Some responses are larger than 255 bytes.
+  uint16_t startingSpot; // The counter value needed to go past before we begin recording into payload array
+  uint8_t *payload;      // We will allocate RAM for the payload if/when needed.
+  uint8_t checksumA;     // Given to us from module. Checked against the rolling calculated A/B checksums.
+  uint8_t checksumB;
+  Isfe_ublox_packet_validity_e valid;           // Goes from NOT_DEFINED to VALID or NOT_VALID when checksum is checked
+  Isfe_ublox_packet_validity_e classAndIDmatch; // Goes from NOT_DEFINED to VALID or NOT_VALID when the Class and ID match the requestedClass and requestedID
+};
+
 /**
  * @brief Abstract interface for GPS modules
  */
@@ -165,12 +205,27 @@ public:
      */
     virtual bool getTimeFullyResolved() = 0;
 
-    /**
-     * @brief Power off GPS with interrupt wake-up option
-     * @param enableInterrupt true to enable wake on interrupt
-     * @return true if successful, false otherwise
+     /**
+     * @brief Power off the GPS receiver for a specified duration or indefinitely,
+     *        configuring hardware wakeup sources.
+     * @param durationInMs Duration to sleep in milliseconds. Set to 0 for indefinite sleep until wakeup event.
+     * @param wakeupSources Bitmask indicating which sources can wake the module.
+     *                      Commonly uses constants like VAL_RXM_PMREQ_WAKEUPSOURCE_EXTINT0,
+     *                      VAL_RXM_PMREQ_WAKEUPSOURCE_EXTINT1, VAL_RXM_PMREQ_WAKEUPSOURCE_UARTRX,
+     *                      VAL_RXM_PMREQ_WAKEUPSOURCE_SPICS (defined by the underlying u-blox library).
+     * @param forceWhileUsb Set to true to force power down even if USB is connected (recommended).
+     *                      Set to false to prevent power down if USB is enumerated.
+     * @return true if the command was successfully sent/acknowledged, false otherwise.
      */
-    virtual bool powerOffWithInterrupt(bool enableInterrupt) = 0;
+    virtual bool powerOffWithInterrupt(uint32_t durationInMs, uint32_t wakeupSources, bool forceWhileUsb = true) = 0;
+    
+    /**
+     * @brief Send a command to the GPS module
+     * @param outgoingUBX Pointer to the outgoing UBX packet
+     * @param maxWait Maximum wait time for response (in milliseconds)
+     * @return Status of the command
+     */
+    virtual Isfe_ublox_status_e sendCommand(IUbxPacket *outgoingUBX, uint16_t maxWait = 1100) = 0;
 };
 
 #endif // IGPS_H
