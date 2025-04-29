@@ -13,6 +13,9 @@
 
 #include <stdint.h>
 
+#define MAX_PAYLOAD_SIZE 276 // We need >=250 bytes for getProtocolVersion on the NEO-F10N
+#define GPS_COM_TYPE_UBX 1
+
 typedef enum
 {
   SUCCESS,

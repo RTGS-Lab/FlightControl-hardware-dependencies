@@ -6,6 +6,23 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+enum IChannel {
+    CSA_CH1 = 0,
+    CSA_CH2 = 1,
+    CSA_CH3 = 2,
+    CSA_CH4 = 3,
+};
+
+enum IFrequency {
+    CSA_SPS_8 = 0b11,
+    CSA_SPS_64 = 0b10,
+    CSA_SPS_256 = 0b01,
+    CSA_SPS_1024 = 0b00
+  };
+
+#define CSA_BIDIRECTIONAL 1
+#define CSA_UNIDIRECTIONAL 0
+
 /**
  * @brief Abstract interface for current sensing amplifiers
  * 
