@@ -12,8 +12,8 @@ Based on original PCAL9535A implementation
 #include "../../FlightControl-platform-dependencies/src/IWire.h" // Use platform-independent IWire
 
 // Define constants needed for interface users
-#define A 0
-#define B 1
+#define PORT_A 0
+#define PORT_B 1
 
 /**
  * @brief Abstract interface for PCAL9535A I/O expander functionality
