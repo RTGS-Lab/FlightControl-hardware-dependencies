@@ -15,6 +15,12 @@ Based on original PCAL9535A implementation
 #define PORT_A 0
 #define PORT_B 1
 
+enum IDriveStrength: uint8_t {
+    DRIVE_STRENGTH_DEFAULT    = 0,
+    DRIVE_STRENGTH_HIGH       = 1,
+    DRIVE_STRENGTH_STANDARD   = 2
+};
+
 /**
  * @brief Abstract interface for PCAL9535A I/O expander functionality
  */
@@ -34,6 +40,17 @@ public:
         BOTH = 2,
     };
 
+    enum IPinMode {
+        INPUT = 0,
+        OUTPUT = 1,
+        INPUT_PULLUP = 2,
+    };
+
+    enum ILevel: uint8_t {
+        LOW = 0,
+        HIGH = 1
+    };
+
     // Virtual destructor
     virtual ~IIOExpander() = default;
     
@@ -49,8 +66,8 @@ public:
     virtual int digitalRead(int Pin) = 0;
     
     // Drive strength methods
-    virtual int pinSetDriveStrength(int Pin, DriveStrength State, bool Port) = 0;
-    virtual int pinSetDriveStrength(int Pin, DriveStrength State) = 0;
+    virtual int pinSetDriveStrength(int Pin, IDriveStrength State, bool Port) = 0;
+    virtual int pinSetDriveStrength(int Pin, IDriveStrength State) = 0;
     
     // Interrupt methods
     virtual int setInterrupt(int Pin, bool State, bool Port) = 0;
